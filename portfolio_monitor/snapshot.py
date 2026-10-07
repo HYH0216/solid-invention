@@ -1,4 +1,4 @@
-"""Turn raw Trading 212 responses into a compact snapshot and compare it with the previous one."""
+"""Turn raw Trading 212 responses into a compact snapshot."""
 
 from datetime import datetime, timezone
 
@@ -54,34 +54,3 @@ def build_snapshot(summary: dict, positions: list[dict]) -> dict:
         "holdings": holdings,
     }
 
-
-def diff_snapshots(previous: dict | None, current: dict) -> dict | None:
-    """Changes since the previous run, or None on the first run."""
-    if not previous:
-        return None
-
-    prev = {h["ticker"]: h for h in previous.get("holdings", [])}
-    curr = {h["ticker"]: h for h in current["holdings"]}
-
-    moves = []
-    for ticker, h in curr.items():
-        old = prev.get(ticker)
-        if not old or not old.get("current_price"):
-            continue
-        moves.append({
-            "ticker": ticker,
-            "price_change_pct": round((h["current_price"] / old["current_price"] - 1) * 100, 2),
-            "value_change": round(h["value"] - old["value"], 2),
-            "quantity_change": round(h["quantity"] - old["quantity"], 6),
-        })
-    moves.sort(key=lambda m: abs(m["price_change_pct"]), reverse=True)
-
-    prev_total = previous.get("total_value") or 0
-    return {
-        "previous_taken_at": previous.get("taken_at"),
-        "total_value_change": round(current["total_value"] - prev_total, 2),
-        "total_value_change_pct": round((current["total_value"] / prev_total - 1) * 100, 2) if prev_total else None,
-        "opened": sorted(set(curr) - set(prev)),
-        "closed": sorted(set(prev) - set(curr)),
-        "moves": moves,
-    }
