@@ -1,4 +1,4 @@
-"""Print the Trading 212 portfolio snapshot and the watchlist as JSON, for Claude to analyse.
+"""Print the Trading 212 portfolio snapshot and the watchlist, with daily prices, as JSON for Claude to analyse.
 
 Usage:
     python -m portfolio_monitor                 # read the live account (needs T212_API_KEY / T212_API_SECRET)
@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 
+from .quotes import fetch_quote
 from .snapshot import build_snapshot
 from .trading212 import Trading212Client
 
@@ -43,6 +44,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sample", help="JSON file with {'summary': ..., 'positions': [...]} to use instead of the API")
     parser.add_argument("--watchlist", default=str(WATCHLIST), help="file with one ticker per line")
+    parser.add_argument("--no-quotes", action="store_true", help="skip fetching prices from Yahoo Finance")
     args = parser.parse_args()
 
     if args.sample:
@@ -56,6 +58,12 @@ def main() -> None:
     # Trading 212 tickers look like TSLA_US_EQ; compare on the symbol so held stocks drop out of the watchlist.
     held = {symbol(h["ticker"]) for h in snapshot["holdings"] if h["ticker"]}
     watchlist = [t for t in load_watchlist(Path(args.watchlist)) if symbol(t) not in held]
+
+    if not args.no_quotes:
+        for h in snapshot["holdings"]:
+            if h["ticker"]:
+                h["market"] = fetch_quote(h["ticker"])
+        watchlist = [{"ticker": t, "market": fetch_quote(t)} for t in watchlist]
 
     print(json.dumps({"portfolio": snapshot, "watchlist": watchlist}, ensure_ascii=False, indent=2))
 
