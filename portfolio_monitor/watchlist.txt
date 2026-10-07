@@ -1,3 +1,14 @@
 # 关注列表：每行一个股票代码，# 后面是注释。
 # 可以写普通代码（AAPL、MSFT、LSEG.L），也可以写 Trading 212 的代码（AAPL_US_EQ）。
 # 已经持有的股票不用写，持仓会自动包含在报告里。
+NBIS
+ANET
+MRVL
+COHR
+INTC
+LRCX
+AVGO
+MU
+VRT
+TSLA
+LLY

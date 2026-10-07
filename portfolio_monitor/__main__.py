@@ -35,6 +35,10 @@ def load_watchlist(path: Path) -> list[str]:
     return tickers
 
 
+def symbol(ticker: str) -> str:
+    return ticker.split("_", 1)[0].upper()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sample", help="JSON file with {'summary': ..., 'positions': [...]} to use instead of the API")
@@ -49,8 +53,9 @@ def main() -> None:
         summary, positions = client.account_summary(), client.positions()
 
     snapshot = build_snapshot(summary, positions)
-    held = {h["ticker"] for h in snapshot["holdings"]}
-    watchlist = [t for t in load_watchlist(Path(args.watchlist)) if t not in held]
+    # Trading 212 tickers look like TSLA_US_EQ; compare on the symbol so held stocks drop out of the watchlist.
+    held = {symbol(h["ticker"]) for h in snapshot["holdings"] if h["ticker"]}
+    watchlist = [t for t in load_watchlist(Path(args.watchlist)) if symbol(t) not in held]
 
     print(json.dumps({"portfolio": snapshot, "watchlist": watchlist}, ensure_ascii=False, indent=2))
 
