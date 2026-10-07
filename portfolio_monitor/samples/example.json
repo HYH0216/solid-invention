@@ -1,0 +1,35 @@
+{
+  "summary": {
+    "id": 12345678,
+    "currency": "GBP",
+    "totalValue": 25480.35,
+    "cash": {"availableToTrade": 1820.40, "inPies": 0, "reservedForOrders": 0},
+    "investments": {"currentValue": 23659.95, "totalCost": 20110.00, "unrealizedProfitLoss": 3549.95, "realizedProfitLoss": 412.80}
+  },
+  "positions": [
+    {
+      "instrument": {"ticker": "NVDA_US_EQ", "name": "NVIDIA", "isin": "US67066G1040", "currency": "USD"},
+      "quantity": 40, "quantityAvailableForTrading": 40, "quantityInPies": 0,
+      "currentPrice": 182.50, "averagePricePaid": 120.10, "createdAt": "2024-03-11T14:32:00Z",
+      "walletImpact": {"currency": "GBP", "totalCost": 3790.00, "currentValue": 5610.20, "unrealizedProfitLoss": 1820.20, "fxImpact": -45.10}
+    },
+    {
+      "instrument": {"ticker": "VUAGl_EQ", "name": "Vanguard S&P 500 (Acc)", "isin": "IE00BFMXXD54", "currency": "GBP"},
+      "quantity": 120, "quantityAvailableForTrading": 120, "quantityInPies": 0,
+      "currentPrice": 98.40, "averagePricePaid": 82.00, "createdAt": "2023-09-01T09:00:00Z",
+      "walletImpact": {"currency": "GBP", "totalCost": 9840.00, "currentValue": 11808.00, "unrealizedProfitLoss": 1968.00, "fxImpact": 0}
+    },
+    {
+      "instrument": {"ticker": "TSLA_US_EQ", "name": "Tesla", "isin": "US88160R1014", "currency": "USD"},
+      "quantity": 12, "quantityAvailableForTrading": 12, "quantityInPies": 0,
+      "currentPrice": 410.00, "averagePricePaid": 455.00, "createdAt": "2025-01-20T15:10:00Z",
+      "walletImpact": {"currency": "GBP", "totalCost": 4380.00, "currentValue": 3684.75, "unrealizedProfitLoss": -695.25, "fxImpact": -30.40}
+    },
+    {
+      "instrument": {"ticker": "AZNl_EQ", "name": "AstraZeneca", "isin": "GB0009895292", "currency": "GBX"},
+      "quantity": 21, "quantityAvailableForTrading": 21, "quantityInPies": 0,
+      "currentPrice": 12200, "averagePricePaid": 10000, "createdAt": "2024-11-05T10:20:00Z",
+      "walletImpact": {"currency": "GBP", "totalCost": 2100.00, "currentValue": 2557.00, "unrealizedProfitLoss": 457.00, "fxImpact": 0}
+    }
+  ]
+}

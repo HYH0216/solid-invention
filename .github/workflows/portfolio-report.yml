@@ -1,0 +1,52 @@
+name: Portfolio report
+
+on:
+  schedule:
+    # Weekdays 21:30 UTC: after the US close (22:30 UK summer time, 21:30 UK winter time).
+    - cron: "30 21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # The previous snapshot lets the report show day-over-day changes.
+      - name: Restore previous snapshot
+        uses: actions/cache/restore@v4
+        with:
+          path: .state
+          key: portfolio-snapshot-${{ github.run_id }}
+          restore-keys: portfolio-snapshot-
+
+      - name: Build and send report
+        run: python -m portfolio_monitor
+        env:
+          T212_API_KEY: ${{ secrets.T212_API_KEY }}
+          T212_API_SECRET: ${{ secrets.T212_API_SECRET }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          INVESTOR_PROFILE: ${{ vars.INVESTOR_PROFILE }}
+
+      - name: Save snapshot
+        uses: actions/cache/save@v4
+        with:
+          path: .state
+          key: portfolio-snapshot-${{ github.run_id }}
