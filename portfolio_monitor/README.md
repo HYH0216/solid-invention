@@ -25,7 +25,6 @@
 ## 本地试跑
 
 ```bash
-pip install -r requirements.txt
 python -m portfolio_monitor --sample portfolio_monitor/samples/example.json   # 用示例数据
 T212_API_KEY=... T212_API_SECRET=... python -m portfolio_monitor               # 用真实账户
 ```
